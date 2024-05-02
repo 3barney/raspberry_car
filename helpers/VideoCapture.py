@@ -31,7 +31,7 @@ class VideoCapture:
             print(f"Video saved to {self.output_file}")
 
 
-video_capture = VideoCapture(output_file="/home/pi/video.mp4", resolution=(640, 360))
+video_capture = VideoCapture(output_file="/home/barneyjomo/pi/video.mp4", resolution=(640, 360))
 
 if __name__ == '__main__':
     # video_capture = VideoCapture(output_file="/home/pi/video.mp4", resolution=(640, 360))
