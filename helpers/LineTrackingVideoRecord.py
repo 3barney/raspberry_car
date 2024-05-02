@@ -30,11 +30,11 @@ class LineTrackingVideoRecord:
             if self.LMR == 2:
                 PWM.setMotorModel(800, 800, 800, 800)
             elif self.LMR == 4:
-                PWM.setMotorModel(-1000, -1000, 2500, 2500)
+                PWM.setMotorModel(-800, -800, 1500, 1500)
             elif self.LMR == 6:
                 PWM.setMotorModel(800, 800, 800, 800)
             elif self.LMR == 1:
-                PWM.setMotorModel(2500, 2500, -1500, -1500)
+                PWM.setMotorModel(1500, 1500, -800, -800)
             elif self.LMR == 3:
                 print("3 active")
                 PWM.setMotorModel(800, 800, 800, 800)
