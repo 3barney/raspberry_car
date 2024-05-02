@@ -17,14 +17,6 @@ class VideoCapture:
         self.picam2.start_recording(self.encoder, self.output_file)
         print("Recording or performing operations. Press Ctrl+C to stop.")
 
-        try:
-            while True:
-                time.sleep(1)
-        except KeyboardInterrupt:
-            print("Recording stopped by user")
-        finally:
-            self.stop_and_save()
-
 
     def stop_and_save(self):
         self.picam2.stop_recording()

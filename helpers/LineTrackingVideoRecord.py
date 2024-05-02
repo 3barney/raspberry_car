@@ -17,7 +17,6 @@ class LineTrackingVideoRecord:
     def run(self):
         # start recording
         video_capture.record_video()
-        time.sleep(1)
 
         while True:
 
@@ -29,22 +28,16 @@ class LineTrackingVideoRecord:
             if GPIO.input(self.IR03) == True:
                 self.LMR = (self.LMR | 1)
             if self.LMR == 2:
-                print("2 active")
-                # distance = self
                 PWM.setMotorModel(800, 800, 800, 800)
             elif self.LMR == 4:
-                print("2 active")
-                PWM.setMotorModel(-1500, -1500, 2500, 2500)
+                PWM.setMotorModel(-1000, -1000, 2500, 2500)
             elif self.LMR == 6:
-                print("6 active")
-                PWM.setMotorModel(-2000, -2000, 4000, 4000)
+                PWM.setMotorModel(800, 800, 800, 800)
             elif self.LMR == 1:
-                print("1 active")
                 PWM.setMotorModel(2500, 2500, -1500, -1500)
             elif self.LMR == 3:
                 print("3 active")
-
-                PWM.setMotorModel(4000, 4000, -2000, -2000)
+                PWM.setMotorModel(800, 800, 800, 800)
             elif self.LMR == 7:
                 print("2 active")
 
