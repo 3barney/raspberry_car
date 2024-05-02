@@ -17,6 +17,7 @@ class LineTrackingVideoRecord:
         while True:
             # start recording
             video_capture.record_video()
+            time.sleep(1)
 
             self.LMR = 0x00
             if GPIO.input(self.IR01) == True:
