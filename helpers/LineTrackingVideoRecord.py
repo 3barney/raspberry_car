@@ -3,6 +3,7 @@ from VideoCapture import *
 import time
 import RPi.GPIO as GPIO
 
+
 class LineTrackingVideoRecord:
     def __init__(self):
         self.IR01 = 14
@@ -14,10 +15,11 @@ class LineTrackingVideoRecord:
         GPIO.setup(self.IR03, GPIO.IN)
 
     def run(self):
+        # start recording
+        video_capture.record_video()
+        time.sleep(1)
+
         while True:
-            # start recording
-            video_capture.record_video()
-            time.sleep(1)
 
             self.LMR = 0x00
             if GPIO.input(self.IR01) == True:
@@ -57,4 +59,5 @@ if __name__ == '__main__':
     try:
         infrared.run()
     except KeyboardInterrupt:  # When 'Ctrl+C' is pressed, the child program  will be  executed.
+        video_capture.stop_and_save()
         PWM.setMotorModel(0, 0, 0, 0)
