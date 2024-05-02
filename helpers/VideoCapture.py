@@ -1,6 +1,7 @@
 from picamera2 import Picamera2, Preview
 from picamera2.encoders import H264Encoder
 
+import time
 
 class VideoCapture:
 
@@ -12,10 +13,18 @@ class VideoCapture:
         self.output_file = output_file
 
     def record_video(self):
-        while True:
-            self.picam2.start_preview(Preview.QTGL)  # pi specific, not needed on desktop
-            self.picam2.start_recording(self.encoder, self.output_file)
-            print("Recording or performing operations. Press Ctrl+C to stop.")
+        self.picam2.start_preview(Preview.QTGL)  # pi specific, not needed on desktop
+        self.picam2.start_recording(self.encoder, self.output_file)
+        print("Recording or performing operations. Press Ctrl+C to stop.")
+
+        try:
+            while True:
+                time.sleep(1)
+        except KeyboardInterrupt:
+            print("Recording stopped by user")
+        finally:
+            self.stop_and_save()
+
 
     def stop_and_save(self):
         self.picam2.stop_recording()
