@@ -65,6 +65,13 @@ def getLaneCurve(image, display=2):
     # cv2.imshow("Warp Points", imageWarpPoints)
     # cv2.imshow("Image histogram", imageHistogram)
 
+    # Normalize [-1, 1]
+    curve = curve/100
+    if curve > 1:
+        curve == 1
+    if curve < -1:
+        curve == -1
+
     return curve
 
 

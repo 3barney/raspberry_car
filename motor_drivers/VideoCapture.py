@@ -1,8 +1,6 @@
 from picamera2 import Picamera2, Preview
 from picamera2.encoders import H264Encoder
 
-import time
-
 
 class VideoCapture:
 
@@ -25,7 +23,7 @@ class VideoCapture:
         print(f"Video saved to {self.output_file}")
 
 
-video_capture = VideoCapture(output_file="/home/barneyjomo/pi/video.h264", resolution=(480, 280))
+video_capture = VideoCapture(output_file="/home/barneyjomo/pi/video.h264", resolution=(480, 240))
 
 if __name__ == '__main__':
 
