@@ -1,30 +1,29 @@
 import time
 import cv2
 import numpy as np
-from picamera2 import Picamera2
+import utils
 
-from helpers.Motor import *
-from utils import *
+def getLaneCurve(img):
+    # recieve an image and returns value of curve
+
+    # 1. Threshold based on color since our path is black, just get black pixels : (Rsch Edge Detectors)
+
+    imageThreshold = utils.threshold(img)
+
+    cv2.imshow("Thres", imageThreshold)
+    return None
+
 
 if __name__ == '__main__':
-    # TODO: We run test video that we will capture
-    pass
 
-# Initialize camera
-# picam2 = Picamera2()
-# camera_config = picam2.create_preview_configuration(main={"size": (640, 360)})
-# picam2.configure(camera_config)
-# time.sleep(5)
-# picam2.start()
-# time.sleep(0.1) # for camera to initialize
-#
-# try:
-#     while True:
-#         image = picam2.capture_array()
-#
-#         blackline = cv2.inRange(image, (0, 0, 0), (50, 50, 50))
-#         img, contours, hierachy = cv2.find
-#
-# finally:
-#     cv2.destroyAllWindows()
-#     picam2.stop()
+    #cap = cv2.VideoCapture('videos/pi/daytime/daytime500_clockwise_1.mp4')
+    cap = cv2.VideoCapture('videos/pi/vid.mp4')
+    print(cap)
+    while True:
+        success, img = cap.read()  # GET THE IMAGE
+        img = cv2.resize(img, (640, 480))  # RESIZE
+
+        getLaneCurve(img)
+        cv2.imshow('vid', img)
+        cv2.waitKey(1)
+

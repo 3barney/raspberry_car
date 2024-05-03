@@ -1,1 +1,5 @@
 .idea
+/videos
+__pycache__/
+helpers/__pycache__/
+libs/__pycache__/
