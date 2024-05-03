@@ -1,15 +1,15 @@
 import sys
 import os
+import math
+import time
 
 # access the libs package
 current_dir = os.path.dirname(__file__)
 parent_dir = os.path.dirname(current_dir)
 sys.path.append(parent_dir)
 
-import math
 from libs.PCA9685 import PCA9685
 from libs.ADC import *
-import time
 
 
 class Motor:

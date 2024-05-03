@@ -19,11 +19,11 @@ class LineTrackingVideoRecord:
 
         while True:
             self.LMR = 0x00
-            if GPIO.input(self.IR01) == True:
+            if GPIO.input(self.IR01):
                 self.LMR = (self.LMR | 4)
-            if GPIO.input(self.IR02) == True:
+            if GPIO.input(self.IR02):
                 self.LMR = (self.LMR | 2)
-            if GPIO.input(self.IR03) == True:
+            if GPIO.input(self.IR03):
                 self.LMR = (self.LMR | 1)
 
             # 4, 2, 1 -> Rep left, Middle, Right
