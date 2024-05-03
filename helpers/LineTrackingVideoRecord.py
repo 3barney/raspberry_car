@@ -1,7 +1,7 @@
 from Motor import *
 from VideoCapture import *
-import time
 import RPi.GPIO as GPIO
+import time
 
 
 class LineTrackingVideoRecord:
@@ -15,11 +15,9 @@ class LineTrackingVideoRecord:
         GPIO.setup(self.IR03, GPIO.IN)
 
     def run(self):
-        # start recording
         video_capture.record_video()
 
         while True:
-
             self.LMR = 0x00
             if GPIO.input(self.IR01) == True:
                 self.LMR = (self.LMR | 4)
@@ -27,21 +25,25 @@ class LineTrackingVideoRecord:
                 self.LMR = (self.LMR | 2)
             if GPIO.input(self.IR03) == True:
                 self.LMR = (self.LMR | 1)
-            if self.LMR == 2:
-                PWM.setMotorModel(800, 800, 800, 800)
-            elif self.LMR == 4:
-                PWM.setMotorModel(-800, -800, 1500, 1500)
-            elif self.LMR == 6:
-                PWM.setMotorModel(800, 800, 800, 800)
-            elif self.LMR == 1:
-                PWM.setMotorModel(1500, 1500, -800, -800)
-            elif self.LMR == 3:
-                print("3 active")
-                PWM.setMotorModel(800, 800, 800, 800)
-            elif self.LMR == 7:
-                print("2 active")
 
-                # pass
+            # 4, 2, 1 -> Rep left, Middle, Right
+            # 3 (2+1), 6 (4+2), 7(4+2+1) -> Not valid since Lane is Large
+            if self.LMR == 2:
+                PWM.setMotorModel(500, 500, 500, 500)
+                # PWM.setMotorModel(800, 800, 800, 800)
+            elif self.LMR == 4:
+                PWM.setMotorModel(-500, -500, 1000, 1000)
+                # PWM.setMotorModel(-1500, -1500, 2500, 2500)
+            elif self.LMR == 6:
+                PWM.setMotorModel(500, 500, 500, 500)
+                # PWM.setMotorModel(800, 800, 800, 800)
+            elif self.LMR == 1:
+                PWM.setMotorModel(1000, 1000, -500, -500)
+                # PWM.setMotorModel(2500,2500,-1500,-1500)
+            elif self.LMR == 3:
+                PWM.setMotorModel(500, 500, 500, 500)
+                # PWM.setMotorModel(800, 800, 800, 800)
+            elif self.LMR == 7:
                 PWM.setMotorModel(0, 0, 0, 0)
 
 

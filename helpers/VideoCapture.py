@@ -3,6 +3,7 @@ from picamera2.encoders import H264Encoder
 
 import time
 
+
 class VideoCapture:
 
     def __init__(self, output_file, resolution=(1920, 1080), bitrate=10000000):
@@ -17,7 +18,6 @@ class VideoCapture:
         self.picam2.start_recording(self.encoder, self.output_file)
         print("Recording or performing operations. Press Ctrl+C to stop.")
 
-
     def stop_and_save(self):
         self.picam2.stop_recording()
         self.picam2.stop_preview()
@@ -25,10 +25,9 @@ class VideoCapture:
         print(f"Video saved to {self.output_file}")
 
 
-video_capture = VideoCapture(output_file="/home/barneyjomo/pi/video.h264", resolution=(640, 360))
+video_capture = VideoCapture(output_file="/home/barneyjomo/pi/video.h264", resolution=(480, 280))
 
 if __name__ == '__main__':
-    # video_capture = VideoCapture(output_file="/home/pi/video.mp4", resolution=(640, 360))
 
     try:
         video_capture.record_video()
@@ -37,4 +36,3 @@ if __name__ == '__main__':
     finally:
         # Stop recording and preview
         video_capture.stop_and_save()
-
