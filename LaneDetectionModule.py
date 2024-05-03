@@ -10,15 +10,13 @@ def getLaneCurve(img):
 
     imageThreshold = utils.threshold(img)
 
-    cv2.imshow("Thres", imageThreshold)
+    cv2.imshow("Threshold", imageThreshold)
     return None
 
 
 if __name__ == '__main__':
 
-    #cap = cv2.VideoCapture('videos/pi/daytime/daytime500_clockwise_1.mp4')
-    cap = cv2.VideoCapture('videos/pi/vid.mp4')
-    print(cap)
+    cap = cv2.VideoCapture('videos/pi/daytime/daytime500_clockwise_1.mp4')
     while True:
         success, img = cap.read()  # GET THE IMAGE
         img = cv2.resize(img, (640, 480))  # RESIZE
