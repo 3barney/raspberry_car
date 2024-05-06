@@ -23,7 +23,7 @@ class VideoCapture:
         print(f"Video saved to {self.output_file}")
 
 
-video_capture = VideoCapture(output_file="/home/barneyjomo/pi/video.h264", resolution=(480, 240))
+video_capture = VideoCapture(output_file="/home/barneyjomo/pi/video.h264", resolution=(980, 600))
 
 if __name__ == '__main__':
 

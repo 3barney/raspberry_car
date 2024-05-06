@@ -13,7 +13,8 @@ class ImageCapture:
     def capture_image(self, display=False):
         self.picam2.start_preview(Preview.QTGL)
         self.picam2.start()
-        img = self.picam2.capture_array()
+        image = self.picam2.capture_array()
+        img = cv2.resize(image, (480, 240))
         if display:
             cv2.imshow("image", img)
 
@@ -24,7 +25,7 @@ class ImageCapture:
         self.picam2.stop()
 
 
-camera_capture = ImageCapture(resolution=(480, 240))
+camera_capture = ImageCapture(resolution=(980, 600))
 
 if __name__ == '__main__':
     try:
