@@ -12,12 +12,14 @@ avgValue = 10
 def getLaneCurve(image, display=2):
     imageCopy = image.copy()
     imageResult = image.copy()
-    # receive an image and returns value of curve
 
     # STEP 1. Threshold based on color since our path is black, just get black pixels : (Rsch Edge Detectors)
     imageThreshold = utils.threshold(image)
 
     # STEP 2
+    initialTrackbar = [34, 248, 34, 412]
+    utils.initializeTrackbars(initialTrackbar)
+
     height, width, channels = image.shape
     points = utils.getTrackbarValues()
     imageWarp = utils.warpImage(imageThreshold, points, width, height)

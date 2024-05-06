@@ -9,7 +9,7 @@ def main():
     img = camera_capture.capture_image(display=True)
     curveValue = getLaneCurve(img, display=2)
 
-    print("curve value" + curveValue)
+    # print(f"curve value {curveValue}")
 
     if curveValue > 0.3 : curveValue = 0.3
     if curveValue < -0.3 : curveValue = -curveValue
@@ -38,4 +38,8 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    try:
+        while True:
+            main()
+    except KeyboardInterrupt:
+        camera_capture.stop()

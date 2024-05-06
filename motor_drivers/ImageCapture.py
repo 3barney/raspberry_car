@@ -9,16 +9,17 @@ class ImageCapture:
         self.picam2 = Picamera2()
         camera_config = self.picam2.create_preview_configuration(main={"size": resolution})
         self.picam2.configure(camera_config)
-
-    def capture_image(self, display=False):
         self.picam2.start_preview(Preview.QTGL)
         self.picam2.start()
-        image = self.picam2.capture_array()
-        img = cv2.resize(image, (480, 240))
-        if display:
-            cv2.imshow("image", img)
 
-        return img
+    def capture_image(self, display=False):
+        image_data = self.picam2.capture_array()
+        image_resize = cv2.resize(image_data, (480, 240))
+
+        if display:
+            cv2.imshow("captured image", image_resize)
+
+        return image_resize
 
     def stop(self):
         self.picam2.stop_preview()
