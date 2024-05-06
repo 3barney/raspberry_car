@@ -3,6 +3,7 @@ from LaneDetectionModule import getLaneCurve
 from motor_drivers.ImageCapture import *
 
 import cv2
+import utils
 
 def main():
 
@@ -39,6 +40,8 @@ def main():
 
 if __name__ == '__main__':
     try:
+        initialTrackbar = [34, 248, 34, 412]
+        utils.initializeTrackbars(initialTrackbar)
         while True:
             main()
     except KeyboardInterrupt:
