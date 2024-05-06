@@ -13,11 +13,11 @@ class ImageCapture:
     def capture_image(self, display=False):
         self.picam2.start_preview(Preview.QTGL)
         self.picam2.start()
-        image = self.picam2.capture_array()
+        img = self.picam2.capture_array()
         if display:
-            cv2.imshow("image", image)
+            cv2.imshow("image", img)
 
-        return image
+        return img
 
     def stop(self):
         self.picam2.stop_preview()

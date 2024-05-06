@@ -1,16 +1,41 @@
-# This is a sample Python script.
+from motor_drivers.Motor import *
+from LaneDetectionModule import getLaneCurve
+from motor_drivers.ImageCapture import *
 
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import cv2
+
+def main():
+
+    img = camera_capture.capture_image(display=True)
+    curveValue = getLaneCurve(img, display=2)
+
+    print("curve value" + curveValue)
+
+    if curveValue > 0.3 : curveValue = 0.3
+    if curveValue < -0.3 : curveValue = -curveValue
+
+    if curveValue > 0:
+        print("Turn Right")
+        PWM.setMotorModel(1000, 1000, -500, -500)
+        if curveValue < 0.05:
+            curveValue = 0
+    else:
+        if curveValue > -0.08:
+            print("MOVE FORWARD")
+            PWM.setMotorModel(500, 500, 500, 500)
+            curveValue = 0
+
+    # if curveValue > 0:
+    #     print("Turn Right")
+    #     PWM.setMotorModel(-500, -500, 1000, 1000)
+    #
+    #     if curveValue < 0.05:
+    #         print("in here")
+    #         curveValue = 0
+    # else:
+    #     if curveValue > -0.08: curveValue = 0
+    cv2.waitKey(1)
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
 if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+    main()
