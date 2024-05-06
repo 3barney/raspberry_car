@@ -17,6 +17,9 @@ def getLaneCurve(image, display=2):
     imageThreshold = utils.threshold(image)
 
     # STEP 2
+    initialTrackbar = [34, 248, 34, 412]
+    utils.initializeTrackbars(initialTrackbar)
+
     height, width, channels = image.shape
     points = utils.getTrackbarValues()
     imageWarp = utils.warpImage(imageThreshold, points, width, height)

@@ -5,15 +5,15 @@ from motor_drivers.ImageCapture import *
 import cv2
 import utils
 
-def main():
 
+def main():
     img = camera_capture.capture_image(display=True)
     curveValue = getLaneCurve(img, display=2)
 
     # print(f"curve value {curveValue}")
 
-    if curveValue > 0.3 : curveValue = 0.3
-    if curveValue < -0.3 : curveValue = -curveValue
+    if curveValue > 0.3: curveValue = 0.3
+    if curveValue < -0.3: curveValue = -curveValue
 
     if curveValue > 0:
         print("Turn Right")
@@ -40,8 +40,6 @@ def main():
 
 if __name__ == '__main__':
     try:
-        initialTrackbar = [34, 248, 34, 412]
-        utils.initializeTrackbars(initialTrackbar)
         while True:
             main()
     except KeyboardInterrupt:
