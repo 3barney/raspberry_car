@@ -36,30 +36,30 @@ def getLaneCurve(image, display=2):
     if len(curveList) > avgValue:
         curveList.pop(0)
 
-    curve = int(sum(curveList) / len(curveList))
+    detected_curve = int(sum(curveList) / len(curveList))
 
     # STEP 5: display
     if display != 0:
         imgInvWarp = utils.warpImage(imageWarp, points, width, height, inverse=True)
         imgInvWarp = cv2.cvtColor(imgInvWarp, cv2.COLOR_GRAY2BGR)
         imgInvWarp[0:height // 3, 0:width] = 0, 0, 0
-        imgLaneColor = np.zeros_like(img)
+        imgLaneColor = np.zeros_like(image)
         imgLaneColor[:] = 0, 255, 0
         imgLaneColor = cv2.bitwise_and(imgInvWarp, imgLaneColor)
         imgResult = cv2.addWeighted(imageResult, 1, imgLaneColor, 1, 0)
         midY = 450
-        cv2.putText(imgResult, str(curve), (width // 2 - 80, 85), cv2.FONT_HERSHEY_COMPLEX, 2, (255, 0, 255), 3)
-        cv2.line(imgResult, (width // 2, midY), (width // 2 + (curve * 3), midY), (255, 0, 255), 5)
-        cv2.line(imgResult, ((width // 2 + (curve * 3)), midY - 25), (width // 2 + (curve * 3), midY + 25), (0, 255, 0),
+        cv2.putText(imgResult, str(detected_curve), (width // 2 - 80, 85), cv2.FONT_HERSHEY_COMPLEX, 2, (255, 0, 255), 3)
+        cv2.line(imgResult, (width // 2, midY), (width // 2 + (detected_curve * 3), midY), (255, 0, 255), 5)
+        cv2.line(imgResult, ((width // 2 + (detected_curve * 3)), midY - 25), (width // 2 + (detected_curve * 3), midY + 25), (0, 255, 0),
                  5)
         for x in range(-30, 30):
             w = width // 20
-            cv2.line(imgResult, (w * x + int(curve // 50), midY - 10),
-                     (w * x + int(curve // 50), midY + 10), (0, 0, 255), 2)
+            cv2.line(imgResult, (w * x + int(detected_curve // 50), midY - 10),
+                     (w * x + int(detected_curve // 50), midY + 10), (0, 0, 255), 2)
         # fps = cv2.getTickFrequency() / (cv2.getTickCount() - timer);
         # cv2.putText(imgResult, 'FPS ' + str(int(fps)), (20, 40), cv2.FONT_HERSHEY_SIMPLEX, 1, (230, 50, 50), 3);
     if display == 2:
-        imgStacked = utils.stackImages(0.7, ([img, imageWarpPoints, imageWarp],
+        imgStacked = utils.stackImages(0.7, ([image, imageWarpPoints, imageWarp],
                                              [imageHistogram, imgLaneColor, imgResult]))
         cv2.imshow('ImageStack', imgStacked)
     elif display == 1:
@@ -71,13 +71,13 @@ def getLaneCurve(image, display=2):
     # cv2.imshow("Image histogram", imageHistogram)
 
     # Normalize [-1, 1]
-    curve = curve / 100
-    if curve > 1:
-        curve == 1
-    if curve < -1:
-        curve == -1
+    detected_curve = detected_curve / 100
+    if detected_curve > 1:
+        detected_curve == 1
+    if detected_curve < -1:
+        detected_curve == -1
 
-    return curve
+    return detected_curve
 
 
 if __name__ == '__main__':
