@@ -19,18 +19,19 @@ class ImageCapture:
 
         if display:
             cv2.imshow("captured image", image_resize)
+            cv2.waitKey(1)
 
         return image_resize
 
     def stop(self):
         self.picam2.stop_preview()
         self.picam2.stop()
+        cv2.destroyAllWindows()
 
-
-camera_capture = ImageCapture(resolution=(980, 600))
 
 if __name__ == '__main__':
     try:
+        camera_capture = ImageCapture(resolution=(980, 600))
         image = camera_capture.capture_image(display=True)
     except KeyboardInterrupt:
         print("Camera stopped")
