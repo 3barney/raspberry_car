@@ -8,9 +8,15 @@ class ImageCapture:
 
     def __init__(self, resolution=(1920, 1080)):
         self.picam2 = Picamera2()
-        camera_config = self.picam2.create_preview_configuration(main={"size": resolution})
-        self.picam2.configure(camera_config)
         self.picam2.start_preview(Preview.QTGL)
+
+        camera_config = self.picam2.create_still_configuration(main={"size": resolution})
+        self.picam2.configure(camera_config)
+
+        # Disable AWB and set custom gains
+        self.picam2.set_controls({"AwbEnable": 0, "AnalogueGain": 1.0, "ExposureTime": 10000})
+        self.picam2.set_controls({"ColourGains": (1.5, 1.2)})  # Adjust these values as needed
+
         self.picam2.start()
         time.sleep(2)
 
