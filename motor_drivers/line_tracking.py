@@ -38,7 +38,7 @@ class LineTracking:
             # Stop
             PWM.setMotorModel(0, 0, 0, 0)
             return "stop"
-        return "unknown"
+        # return "forward"
 
 
 # Main program logic follows:
