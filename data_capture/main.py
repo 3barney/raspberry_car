@@ -8,6 +8,7 @@ from threading import Thread, Event, Lock
 from image_capture import *
 import data_collection_module
 import line_tracking
+
 # access the motor_driver package
 # current_dir = os.path.dirname(__file__)
 # parent_dir = os.path.dirname(current_dir)
@@ -16,6 +17,7 @@ import line_tracking
 # import motor_drivers.line_tracking as line_tracking
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 class DataCapture:
 
@@ -31,7 +33,7 @@ class DataCapture:
         while not self.stop_event.is_set():
             try:
                 turn_value = self.line_tracking.get_turn_value()
-                print(f"line_tracking_thread {turn_value}")
+                logging.info(f"line_tracking_thread {turn_value}")
                 with self.lock:
                     self.turn_value = turn_value
                 time.sleep(0.1)
@@ -52,12 +54,13 @@ class DataCapture:
                 logging.error(f"Error in camera capture thread: {e}")
 
     def run(self):
-        line_tracking_thread = Thread(target=self.line_tracking_thread())
-        camera_capture_thread = Thread(target=self.camera_capture_thread())
-        line_tracking_thread.start()
-        camera_capture_thread.start()
-
         try:
+            line_tracking_thread = Thread(target=self.line_tracking_thread)
+            camera_capture_thread = Thread(target=self.camera_capture_thread)
+            camera_capture_thread.start()
+            line_tracking_thread.start()
+            camera_capture_thread.start()
+
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
