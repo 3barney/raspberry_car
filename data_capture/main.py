@@ -57,7 +57,6 @@ class DataCapture:
         try:
             line_tracking_thread = Thread(target=self.line_tracking_thread)
             camera_capture_thread = Thread(target=self.camera_capture_thread)
-            camera_capture_thread.start()
             line_tracking_thread.start()
             camera_capture_thread.start()
 
