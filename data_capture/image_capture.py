@@ -8,9 +8,10 @@ class ImageCapture:
 
     def __init__(self, resolution=(1920, 1080)):
         self.picam2 = Picamera2()
-        self.camera_config = self.picam2.create_still_configuration(main={"size": resolution})
+        self.camera_config = self.picam2.create_preview_configuration(main={"size": resolution})
         self.picam2.configure(self.camera_config)
-        self.picam2.start(show_preview=True)
+        self.picam2.start_preview(Preview.QTGL)
+        self.picam2.start()
         time.sleep(2)
 
     def capture_image(self, display=False):
