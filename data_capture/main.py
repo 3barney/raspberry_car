@@ -2,6 +2,7 @@ import sys
 import os
 import math
 import time
+import logging
 
 from threading import Thread, Event, Lock
 from image_capture import *
@@ -14,6 +15,7 @@ import line_tracking
 
 # import motor_drivers.line_tracking as line_tracking
 
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 class DataCapture:
 
@@ -27,21 +29,27 @@ class DataCapture:
 
     def line_tracking_thread(self):
         while not self.stop_event.is_set():
-            turn_value = self.line_tracking.get_turn_value()
-            print(f"line_tracking_thread {turn_value}")
-            with self.lock:
-                self.turn_value = turn_value
-            time.sleep(0.1)
+            try:
+                turn_value = self.line_tracking.get_turn_value()
+                print(f"line_tracking_thread {turn_value}")
+                with self.lock:
+                    self.turn_value = turn_value
+                time.sleep(0.1)
+            except Exception as e:
+                logging.error(f"Error in line tracking thread: {e}")
 
     def camera_capture_thread(self):
         while not self.stop_event.is_set():
-            with self.lock:
-                turn_value = self.turn_value
+            try:
+                with self.lock:
+                    turn_value = self.turn_value
 
-            img_data = self.image_capture.capture_image(display=True)
-            print(f"camera_capture_thread saving data with {turn_value}")
-            data_collection_module.saveData(img_data, turn_value)
-            time.sleep(1)
+                img_data = self.image_capture.capture_image(display=True)
+                logging.info(f"Captured and saved image: {turn_value}")
+                data_collection_module.saveData(img_data, turn_value)
+                time.sleep(1)
+            except Exception as e:
+                logging.error(f"Error in camera capture thread: {e}")
 
     def run(self):
         line_tracking_thread = Thread(target=self.line_tracking_thread())
@@ -53,11 +61,11 @@ class DataCapture:
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
-            print("Killing application")
             data_collection_module.saveLog()
             self.stop_event.set()
             line_tracking_thread.join()
             camera_capture_thread.join()
+            logging.info("Data capture stopped")
 
 
 if __name__ == '__main__':
