@@ -8,8 +8,8 @@ class ImageCapture:
 
     def __init__(self, resolution=(1920, 1080)):
         self.picam2 = Picamera2()
-        self.camera_config = self.picam2.create_preview_configuration(main={"size": resolution})
-        self.picam2.configure(self.camera_config)
+        camera_config = self.picam2.create_preview_configuration(main={"size": resolution})
+        self.picam2.configure(camera_config)
         self.picam2.start_preview(Preview.QTGL)
         self.picam2.start()
         time.sleep(2)
@@ -25,7 +25,6 @@ class ImageCapture:
         return image_resize
 
     def stop(self):
-        self.picam2.stop_recording()
         self.picam2.stop_preview()
         self.picam2.stop()
         cv2.destroyAllWindows()
