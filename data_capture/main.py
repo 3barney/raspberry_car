@@ -5,7 +5,7 @@ import time
 
 from threading import Thread, Event, Lock
 from image_capture import *
-import data_collection_module as dcm
+import data_collection_module
 import line_tracking
 # access the motor_driver package
 # current_dir = os.path.dirname(__file__)
@@ -28,6 +28,7 @@ class DataCapture:
     def line_tracking_thread(self):
         while not self.stop_event.is_set():
             turn_value = self.line_tracking.get_turn_value()
+            print(f"line_tracking_thread {turn_value}")
             with self.lock:
                 self.turn_value = turn_value
             time.sleep(0.1)
@@ -38,7 +39,8 @@ class DataCapture:
                 turn_value = self.turn_value
 
             img_data = self.image_capture.capture_image(display=True)
-            dcm.saveData(img_data, turn_value)
+            print(f"camera_capture_thread saving data with {turn_value}")
+            data_collection_module.saveData(img_data, turn_value)
             time.sleep(1)
 
     def run(self):
@@ -51,7 +53,8 @@ class DataCapture:
             while True:
                 time.sleep(1)
         except KeyboardInterrupt:
-            dcm.saveLog()
+            print("Killing application")
+            data_collection_module.saveLog()
             self.stop_event.set()
             line_tracking_thread.join()
             camera_capture_thread.join()

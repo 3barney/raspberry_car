@@ -32,6 +32,7 @@ def saveData(image, turn):
 
 def saveLog():
     global imageList, turnList
+    print(f"About to save  images: {len(imageList)} turns: {len(turnList)}")
     raw_data = {'Image': imageList, 'Turn': turnList}
     data_frame = pd.DataFrame(raw_data)
     data_frame.to_csv(os.path.join(data_collected_directory, f'log_{str(folderCount)}.csv'), index=False, header=False)

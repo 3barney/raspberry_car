@@ -25,9 +25,11 @@ class ImageCapture:
         return image_resize
 
     def stop(self):
+        self.picam2.stop_recording()
         self.picam2.stop_preview()
         self.picam2.stop()
         cv2.destroyAllWindows()
+        print("Stopping camera....")
 
 
 if __name__ == '__main__':
