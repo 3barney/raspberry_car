@@ -6,13 +6,13 @@ import time
 from threading import Thread, Event, Lock
 from image_capture import *
 import data_collection_module as dcm
-
+import line_tracking
 # access the motor_driver package
 # current_dir = os.path.dirname(__file__)
 # parent_dir = os.path.dirname(current_dir)
 # sys.path.append(parent_dir)
 
-import motor_drivers.line_tracking as line_tracking
+# import motor_drivers.line_tracking as line_tracking
 
 
 class DataCapture:
