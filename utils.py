@@ -3,7 +3,6 @@ import numpy as np
 
 
 def threshold(image):
-    # 1. convert to hsv space, config match black since that's our lane
     imageHsv = cv2.cvtColor(image, cv2.COLOR_BGR2HSV)
     blackLowerRange = np.array([30, 125, 0], dtype="uint8")
     blackUpperRange = np.array([170, 255, 255], dtype="uint8")
@@ -32,7 +31,7 @@ def nothing(a):
 
 def initializeTrackbars(intialTrackbarVals, widthTarget=640, heightTarget=480):
     cv2.namedWindow("Trackbars")
-    cv2.resizeWindow("Trackbars", 360, 240)
+    cv2.resizeWindow("Trackbars", widthTarget, heightTarget)
     cv2.createTrackbar("Width Top", "Trackbars", intialTrackbarVals[0], widthTarget // 2, nothing)
     cv2.createTrackbar("Height Top", "Trackbars", intialTrackbarVals[1], heightTarget, nothing)
     cv2.createTrackbar("Width Bottom", "Trackbars", intialTrackbarVals[2], widthTarget // 2, nothing)

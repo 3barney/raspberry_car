@@ -13,12 +13,11 @@ def getLaneCurve(image, display=2):
     imageCopy = image.copy()
     imageResult = image.copy()
 
-    # STEP 1. Threshold based on color since our path is black, just get black pixels : (Rsch Edge Detectors)
+    # 1. Threshold based on color since our path is black, just get black pixels : (Rsch Edge Detectors)
     imageThreshold = utils.threshold(image)
 
-    # STEP 2
-    initialTrackbar = [34, 248, 34, 412]
-    utils.initializeTrackbars(initialTrackbar)
+    # initialTrackbar = [34, 248, 34, 412]
+    # utils.initializeTrackbars(initialTrackbar)
 
     height, width, channels = image.shape
     points = utils.getTrackbarValues()
@@ -44,7 +43,9 @@ def getLaneCurve(image, display=2):
         imgInvWarp = cv2.cvtColor(imgInvWarp, cv2.COLOR_GRAY2BGR)
         imgInvWarp[0:height // 3, 0:width] = 0, 0, 0
         imgLaneColor = np.zeros_like(image)
+
         imgLaneColor[:] = 0, 255, 0
+
         imgLaneColor = cv2.bitwise_and(imgInvWarp, imgLaneColor)
         imgResult = cv2.addWeighted(imageResult, 1, imgLaneColor, 1, 0)
         midY = 450
@@ -83,8 +84,8 @@ def getLaneCurve(image, display=2):
 if __name__ == '__main__':
 
     capture = cv2.VideoCapture('videos/pi/evening/evening500_clockwise_1.mp4')
-    initialTrackbar = [34, 248, 34, 412]
-    utils.initializeTrackbars(initialTrackbar)
+    initialTrackbar = [104, 104, 106, 240]
+    utils.initializeTrackbars(initialTrackbar, widthTarget=480, heightTarget=240)
     frameCounter = 0
 
     while True:
@@ -94,7 +95,7 @@ if __name__ == '__main__':
             frameCounter = 0
 
         success, img = capture.read()  # GET THE IMAGE
-        img = cv2.resize(img, (640, 480))  # RESIZE
+        img = cv2.resize(img, (480, 240))  # RESIZE
 
         # DEBUG = 2, run = 0
         curve = getLaneCurve(img, display=2)
@@ -117,5 +118,5 @@ if __name__ == '__main__':
 
         # print(curveValue)
 
-        # cv2.imshow('vid', img)
+        cv2.imshow('vid', img)
         cv2.waitKey(1)
