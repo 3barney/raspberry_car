@@ -24,21 +24,27 @@ class LineTracking:
             self.LMR = (self.LMR | 1)
         if self.LMR == 2:
             # Middle active
-            PWM.setMotorModel(300, 300, 300, 300)
+            PWM.setMotorModel(200, 200, 200, 200)
             return "forward"
         elif self.LMR == 4:
             # Left active
-            PWM.setMotorModel(-300, -300, 800, 800)
+            PWM.setMotorModel(-200, -200, 700, 700)
             return "left"
         elif self.LMR == 1:
             # Right active
-            PWM.setMotorModel(800, 800, -300, -300)
+            PWM.setMotorModel(700, 700, -200, -200)
             return "right"
         elif self.LMR == 7:
             # Stop
             PWM.setMotorModel(0, 0, 0, 0)
             return "stop"
-        return "unknown"
+        elif self.LMR == 6:
+            PWM.setMotorModel(-400, -400, 1000, 1000)
+            return "left"
+        elif self.LMR == 3:
+            PWM.setMotorModel(1000, 1000, -400, -400)
+            return "right"
+        return "forward"
 
 
 # Main program logic follows:
