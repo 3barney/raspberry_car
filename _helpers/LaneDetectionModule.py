@@ -1,7 +1,5 @@
-import time
 import cv2
 import numpy as np
-from cv2 import VideoCapture
 
 import utils
 
@@ -83,7 +81,7 @@ def getLaneCurve(image, display=2):
 
 if __name__ == '__main__':
 
-    capture = cv2.VideoCapture('videos/pi/evening/evening500_clockwise_1.mp4')
+    capture = cv2.VideoCapture('../videos/pi/evening/evening500_clockwise_1.mp4')
     initialTrackbar = [104, 104, 106, 240]
     utils.initializeTrackbars(initialTrackbar, widthTarget=480, heightTarget=240)
     frameCounter = 0

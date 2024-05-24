@@ -1,9 +1,8 @@
 from motor_drivers.Motor import *
-from LaneDetectionModule import getLaneCurve
+from _helpers.LaneDetectionModule import getLaneCurve
 from motor_drivers.ImageCapture import *
 
 import cv2
-import utils
 
 
 def main():
