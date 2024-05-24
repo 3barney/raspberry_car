@@ -24,7 +24,7 @@ os.makedirs(new_data_collected_directory)
 def saveData(image, turn):
     global imageList, turnList
     timestamp = str(datetime.timestamp(datetime.now())).replace('.', '')
-    file_name = os.path.join(new_data_collected_directory,f'Image_{timestamp}.jpg')
+    file_name = os.path.join(new_data_collected_directory, f'Image_{timestamp}.jpg')
     cv2.imwrite(file_name, image)
     imageList.append(file_name)
     turnList.append(turn)
