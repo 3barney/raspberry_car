@@ -5,3 +5,4 @@ motor_drivers/__pycache__/
 libs/__pycache__/
 motor_drivers/line.py
 data_collected
+requirements.txt
