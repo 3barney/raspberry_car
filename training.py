@@ -74,7 +74,7 @@ train_generator = tf.data.Dataset.from_generator(
     )
 )
 
-val_generator = tf.data.Dataset.from_generator(
+validation_generator = tf.data.Dataset.from_generator(
     lambda: data_generator(
         xVal['images_path'].values,
         xVal['steering_forward'].values,
@@ -101,7 +101,7 @@ history = model.fit(
     train_generator,
     steps_per_epoch=len(xTrain) // batch_data_size,
     epochs=10,
-    validation_data=val_generator,
+    validation_data=validation_generator,
     validation_steps=len(xVal) // batch_data_size
 )
 
@@ -110,7 +110,7 @@ model.save('model.keras')
 print('Model Saved')
 
 
-#results
+# results
 plt.plot(history.history['loss'])
 plt.plot(history.history['val_loss'])
 plt.legend(['Training', 'Validation'])
@@ -119,7 +119,7 @@ plt.xlabel('Epoch')
 plt.show()
 
 # Evaluate model
-test_loss, test_mae, test_mse = model.evaluate(val_generator, steps=len(xVal) // batch_data_size)
+test_loss, test_mae, test_mse = model.evaluate(validation_generator, steps=len(xVal) // batch_data_size)
 print(f'Test Loss: {test_loss}')
 print(f'Test MAE: {test_mae}')
 print(f'Test MSE: {test_mse}')
@@ -140,4 +140,19 @@ plt.legend(['Training MSE', 'Validation MSE'])
 plt.title('Mean Squared Error')
 plt.xlabel('Epoch')
 plt.show()
+
+
+# Test model
+
+for j in range(0, 10):
+    images_path_0 = data_frame.iloc[j]['images_path']
+    steering_0 = data_frame.iloc[j]['steering']
+    steering_forward_0 = data_frame.iloc[j]['steering_forward']
+    steering_left_0 = data_frame.iloc[j]['steering_left']
+    steering_right_0 = data_frame.iloc[j]['steering_right']
+
+    prediction = test_model(model, images_path_0, steering_0,
+                            steering_forward_0, steering_left_0, steering_right_0)
+    print(f'Decoded Prediction is: {prediction}')
+
 

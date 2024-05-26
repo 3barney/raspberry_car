@@ -208,17 +208,24 @@ def data_generator(images_path: str, steering_forward: np.ndarray,
         )
 
 
-def test_model(model: Model, image_path: str, input) -> np.ndarray:
+def test_model(model: Model, image_path: str, steering: str,
+               steering_forward: float, steering_left: float, steering_right: float) -> str:
     image = load_img(image_path, target_size=(120, 300))
     image = img_to_array(image)
     image = process_image_dimensions(image)
     image = np.expand_dims(image, axis=0)
 
-    # numerical_input = np.zeros((1, 3))
-    numerical_input = input
+    steering_input = np.array([steering_forward, steering_left, steering_right])
+    steering_input = np.expand_dims(steering_input, axis=0)
+    print(f'image path: {image_path}, steering value: {steering} steering_enc:  {steering_input}')
 
-    prediction = model.predict({'image_input': image, 'numerical_input': numerical_input})
-    return prediction
+    prediction = model.predict({'image_input': image, 'numerical_input': steering_input})
 
-
+    print(f'Prediction for the test image: {prediction}')
+    if prediction < 0.33:
+        return 'right'
+    elif prediction < 0.66:
+        return 'forward'
+    else:
+        return 'left'
 
