@@ -94,7 +94,6 @@ def balance_data(data: pd.DataFrame, display: bool) -> pd.DataFrame:
 
 
 def load_data(path: str, data: pd.DataFrame) -> tuple[np.ndarray, list[str], list[float], list[float], list[float]]:
-    print(data.head())
     images_path: List[str] = []
     steering: List[str] = []
     steering_forward: List[float] = []
@@ -169,15 +168,14 @@ def create_model() -> Model:
     z_output = Dense(1, activation='linear')(z_output)
 
     model = Model(inputs=[image_input, numerical_input], outputs=z_output)
-    model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse')
+    model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae', 'mse'])
     return model
 
 
-def data_generator(images_path: str, steering: np.ndarray, steering_forward: np.ndarray,
+def data_generator(images_path: str, steering_forward: np.ndarray,
                    steering_left: np.ndarray, steering_right: np.ndarray, batch_size: int, train_flag: bool):
     while True:
         batch_images = []
-        batch_steering = []
         batch_steering_forward = []
         batch_steering_left = []
         batch_steering_right = []
@@ -191,23 +189,36 @@ def data_generator(images_path: str, steering: np.ndarray, steering_forward: np.
                 image = img_to_array(image)
         image = process_image_dimensions(image)
         batch_images.append(image)
-        batch_steering.append(steering[index])
         batch_steering_forward.append(steering_forward[index])
         batch_steering_left.append(steering_left[index])
         batch_steering_right.append(steering_right[index])
 
         yield (
-            [
-                np.asarray(batch_images),
-                np.column_stack((
+            {
+                'image_input': np.asarray(batch_images),
+                'numerical_input': np.column_stack((
                     batch_steering_forward,
                     batch_steering_left,
                     batch_steering_right))
-            ],
-            np.asarray(batch_steering)
+            },
+            np.column_stack((
+                batch_steering_forward,
+                batch_steering_left,
+                batch_steering_right))
         )
 
 
+def test_model(model: Model, image_path: str, input) -> np.ndarray:
+    image = load_img(image_path, target_size=(120, 300))
+    image = img_to_array(image)
+    image = process_image_dimensions(image)
+    image = np.expand_dims(image, axis=0)
+
+    # numerical_input = np.zeros((1, 3))
+    numerical_input = input
+
+    prediction = model.predict({'image_input': image, 'numerical_input': numerical_input})
+    return prediction
 
 
 
