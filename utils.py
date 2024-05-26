@@ -1,17 +1,19 @@
 import os
+import random
+
 import cv2
-import pandas
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.image as mpimg
-import tensorflow.python.keras
 
+import tensorflow.python.keras
+from keras.api.models import Model
+from keras.api.layers import Conv2D, Dense, Flatten, Input, Concatenate
+from keras.api.optimizers import Adam
+from keras.api.preprocessing.image import load_img, img_to_array
 from sklearn.utils import shuffle
 from sklearn.preprocessing import OneHotEncoder
-from keras.api.models import Sequential
-from keras.api.layers import Convolution2D, Dense, Flatten
-from keras.api.optimizers import Adam
 from imgaug import augmenters
 from typing import Tuple, List
 
@@ -28,10 +30,9 @@ def get_name_from_path(file_path: str) -> str:
     return image_path
 
 
-# noinspection PyProtectedMember
 def import_data(directory_path: str) -> pd.DataFrame:
     columns = [column_image_center, column_steering]
-    dataframe = pandas.DataFrame()
+    dataframe = pd.DataFrame()
 
     for value in range(0, 7):
         new_data = pd.read_csv(os.path.join(directory_path, f'log_{value}.csv'), names=columns)
@@ -119,6 +120,7 @@ def load_data(path: str, data: pd.DataFrame) -> tuple[np.ndarray, list[str], lis
 
 def augment_image(image_path: str) -> np.ndarray:
     image = mpimg.imread(image_path)
+    image = img_to_array(image)
     if np.random.rand() < 0.5:
         pan = augmenters.Affine(translate_percent={"x": (-0.1, 0.1), "y": (-0.1, 0.1)})
         image = pan.augment_image(image)
@@ -128,8 +130,8 @@ def augment_image(image_path: str) -> np.ndarray:
     if np.random.rand() < 0.5:
         brightness = augmenters.Multiply((0.5, 1.2))
         image = brightness.augment_image(image)
-    if np.random.rand() < 0.5:
-        image = cv2.flip(image, 1)
+    # if np.random.rand() < 0.5:
+    #     image = cv2.flip(image, 1)
     return image
 
 
@@ -142,23 +144,69 @@ def process_image_dimensions(image: np.ndarray) -> np.ndarray:
     return image
 
 
-def create_model():
-    model = Sequential()
+def create_model() -> Model:
 
-    model.add(Convolution2D(24, (5, 5), (2, 2), input_shape=(66, 200, 3), activation='elu'))
-    model.add(Convolution2D(36, (5, 5), (2, 2), activation='elu'))
-    model.add(Convolution2D(48, (5, 5), (2, 2), activation='elu'))
-    model.add(Convolution2D(64, (3, 3), activation='elu'))
-    model.add(Convolution2D(64, (3, 3), activation='elu'))
+    image_input = Input(shape=(66, 200, 3), name='image_input')
+    x_input = Conv2D(24, (5, 5), strides=(2, 2), activation='relu')(image_input)
+    x_input = Conv2D(36, (5, 5), strides=(2, 2), activation='relu')(x_input)
+    x_input = Conv2D(48, (5, 5), strides=(2, 2), activation='relu')(x_input)
+    x_input = Conv2D(64, (3, 3), activation='relu')(x_input)
+    x_input = Conv2D(64, (3, 3), activation='relu')(x_input)
 
-    model.add(Flatten())
-    model.add(Dense(100, activation='elu'))
-    model.add(Dense(50, activation='elu'))
-    model.add(Dense(10, activation='elu'))
-    model.add(Dense(1))
+    x_input = Flatten()(x_input)
+    x_input = Dense(100, activation='relu')(x_input)
+    x_input = Dense(50, activation='relu')(x_input)
+    x_input = Dense(10, activation='relu')(x_input)
 
-    model.compile(Adam(lr=0.0001), loss='mse')
+    numerical_input = Input(shape=(3,), name='numerical_input')
+    y_input = Dense(32, activation='relu')(numerical_input)
+    y_input = Dense(16, activation='relu')(y_input)
+    y_input = Dense(8, activation='relu')(y_input)
+
+    combined_input = Concatenate()([x_input, y_input])
+    z_output = Dense(50, activation='relu')(combined_input)
+    z_output = Dense(10, activation='relu')(z_output)
+    z_output = Dense(1, activation='linear')(z_output)
+
+    model = Model(inputs=[image_input, numerical_input], outputs=z_output)
+    model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse')
     return model
+
+
+def data_generator(images_path: str, steering: np.ndarray, steering_forward: np.ndarray,
+                   steering_left: np.ndarray, steering_right: np.ndarray, batch_size: int, train_flag: bool):
+    while True:
+        batch_images = []
+        batch_steering = []
+        batch_steering_forward = []
+        batch_steering_left = []
+        batch_steering_right = []
+
+        for i in range(batch_size):
+            index = random.randint(0, len(images_path) - 1)
+            if train_flag:
+                image = augment_image(images_path[index])
+            else:
+                image = mpimg.imread(images_path[index])
+                image = img_to_array(image)
+        image = process_image_dimensions(image)
+        batch_images.append(image)
+        batch_steering.append(steering[index])
+        batch_steering_forward.append(steering_forward[index])
+        batch_steering_left.append(steering_left[index])
+        batch_steering_right.append(steering_right[index])
+
+        yield (
+            [
+                np.asarray(batch_images),
+                np.column_stack((
+                    batch_steering_forward,
+                    batch_steering_left,
+                    batch_steering_right))
+            ],
+            np.asarray(batch_steering)
+        )
+
 
 
 
