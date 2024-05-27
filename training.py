@@ -116,8 +116,8 @@ history = model.fit(
     epochs=10,
     validation_data=validation_generator,
     validation_steps=len(xVal) // batch_data_size,
-    class_weight=class_weights_dictionary,
-    callbacks=[early_stopping]
+    # class_weight=class_weights_dictionary,
+    # callbacks=[early_stopping]
 )
 
 # save model
