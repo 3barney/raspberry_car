@@ -11,6 +11,7 @@ import tensorflow.python.keras
 from keras.api.models import Model
 from keras.api.layers import Conv2D, Dense, Flatten, Input, Concatenate
 from keras.api.optimizers import Adam
+from keras.api.metrics import Precision, Recall, AUC
 from keras.api.preprocessing.image import load_img, img_to_array
 from sklearn.utils import shuffle
 from sklearn.preprocessing import OneHotEncoder
@@ -34,7 +35,7 @@ def import_data(directory_path: str) -> pd.DataFrame:
     columns = [column_image_center, column_steering]
     dataframe = pd.DataFrame()
 
-    for value in range(0, 7):
+    for value in range(10, 22):
         new_data = pd.read_csv(os.path.join(directory_path, f'log_{value}.csv'), names=columns)
         print(f'{value}:{new_data.shape[0]}', end='')
 
@@ -67,7 +68,7 @@ def balance_data(data: pd.DataFrame, display: bool) -> pd.DataFrame:
         plt.ylabel('Number of Samples')
         plt.show()
 
-    samples_per_bin = 20
+    samples_per_bin = 200
     remove_index_list = []
 
     for label in steering_labels:
@@ -166,9 +167,12 @@ def create_model() -> Model:
     z_output = Dense(50, activation='relu')(combined_input)
     z_output = Dense(10, activation='relu')(z_output)
     z_output = Dense(1, activation='linear')(z_output)
+    # z_output = Dense(3, activation='softmax')(z_output)
 
     model = Model(inputs=[image_input, numerical_input], outputs=z_output)
+
     model.compile(optimizer=Adam(learning_rate=0.0001), loss='mse', metrics=['mae', 'mse'])
+    # model.compile(optimizer=Adam(learning_rate=0.00001), loss='categorical_crossentropy', metrics=['accuracy'])
     return model
 
 
@@ -210,22 +214,29 @@ def data_generator(images_path: str, steering_forward: np.ndarray,
 
 def test_model(model: Model, image_path: str, steering: str,
                steering_forward: float, steering_left: float, steering_right: float) -> str:
-    image = load_img(image_path, target_size=(120, 300))
+    image = load_img(image_path, target_size=(66, 200))
     image = img_to_array(image)
     image = process_image_dimensions(image)
     image = np.expand_dims(image, axis=0)
 
     steering_input = np.array([steering_forward, steering_left, steering_right])
     steering_input = np.expand_dims(steering_input, axis=0)
-    print(f'image path: {image_path}, steering value: {steering} steering_enc:  {steering_input}')
+    # print(f'image path: {image_path}, steering value: {steering} steering_enc:  {steering_input}')
 
     prediction = model.predict({'image_input': image, 'numerical_input': steering_input})
-
     print(f'Prediction for the test image: {prediction}')
     if prediction < 0.33:
-        return 'right'
+        return 'left'
     elif prediction < 0.66:
         return 'forward'
     else:
-        return 'left'
+        return 'right'
 
+    # structure: forward, left, right
+    # class_names = ['forward', 'left', 'right']
+    # prediction = model.predict({'image_input': image, 'numerical_input': steering_input})
+    # predicted_class = np.argmax(prediction, axis=1)
+    # predicted_class_name = class_names[predicted_class[0]]
+    #
+    # # print(f'Prediction for the test image: {prediction}, predicted class index:  {predicted_class}, class name {predicted_class_name}')
+    # return predicted_class_name
